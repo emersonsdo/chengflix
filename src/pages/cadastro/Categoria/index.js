@@ -19,9 +19,10 @@ function CadastroCategoria () {
     const [valores, setValores] = useState(valoresIniciais);
 
     useEffect(() => {
-        console.log("Aqui");
-        const URL = 'http://localhost:8080/categorias';
-
+        const isLocalHost = window.location.hostname.includes('localhost')
+        //Colocar como variável de ambiente
+        const URL = isLocalHost ? 'http://localhost:8080/categorias' : 'https://chengflix.herokuapp.com/categorias';
+        
         fetch(URL)
             .then(async (response) => {
                 const jsonResponse = await response.json();

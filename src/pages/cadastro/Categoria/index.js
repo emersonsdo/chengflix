@@ -3,11 +3,13 @@ import PageDefault from '../../../components/PageDefault';
 import { Link } from 'react-router-dom';
 import FormField from '../../../components/FormField/index';
 import Button from '../../../components/Button';
+import useForm from '../../../hooks/useForm';
 
 function CadastroCategoria () {
     //desestruturação antes do '=' com []
     const [categorias, setCategorias] = useState([]);
 
+    //Resolver problema de acesso a estado aninhado
     const valoresIniciais = {
         titulo: '',
         cor: '',
@@ -16,11 +18,12 @@ function CadastroCategoria () {
             url: '',
         }
     }
-    const [valores, setValores] = useState(valoresIniciais);
+
+    const { valores, limpar, handleOnChange } = useForm(valoresIniciais);
 
     useEffect(() => {
         const isLocalHost = window.location.hostname.includes('localhost')
-        //Colocar como variável de ambiente
+        //Variável de ambiente
         const URL = isLocalHost ? 'http://localhost:8080/categorias' : 'https://chengflix.herokuapp.com/categorias';
         
         fetch(URL)
@@ -43,30 +46,10 @@ function CadastroCategoria () {
     }, [/**parâmetros de quando acontecer (quando variável xpto mudar). 
     vazio para só acontecer uma vez, no carregamento da tela (tipo didMount?) */]);
 
-    function handleOnChange(eventInfos){
-        alterarValores(
-            eventInfos.target.getAttribute('name'),
-            eventInfos.target.value
-        );
-        //Isso pode ser feito da forma abaixo, mas deu erro
-        // const { getAttribute, value } = eventInfos.target;
-        // alterarValores( 
-        //     getAttribute('name'),
-        //     value
-        // );
-    }
-
-    function alterarValores(nomeProp, valor){
-        setValores({
-            ...valores,    
-            [nomeProp]: valor // 'nome': valor, no lugar de if, por exemplo. Pega como índices de um array
-        });
-    }
-
     return (
         <PageDefault>
             <h1>
-                Cadastro de categoria: {valores.titulo}
+                Cadastro de categoria: {valores.link_extra.text}
             </h1>
 
             <form onSubmit={function handleSubmit(eventInfos){
@@ -77,7 +60,7 @@ function CadastroCategoria () {
                     valores
                 ]);
 
-                setValores(valoresIniciais);
+                limpar(valoresIniciais);
             }}>
 
                 <FormField 
@@ -140,7 +123,7 @@ function CadastroCategoria () {
                     </label>
                 </div> */}
 
-                <Button>
+                <Button type="submit">
                     Cadastrar
                 </Button>
             </form>

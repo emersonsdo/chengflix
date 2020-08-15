@@ -78,6 +78,7 @@ function FormField(props) {
 
     const isTypeTextArea = props.type === 'textarea';
     const inputType = isTypeTextArea ? 'textarea' : 'input';
+    const hasSuggestions = Boolean(props.suggestions.length);
 
     return (
         <WrapperFormField>
@@ -88,10 +89,25 @@ function FormField(props) {
                     name={props.name}
                     value={props.value} // Poderia ser valores['nome']
                     onChange={props.onChange}
+                    // autoComplete={hasSuggestions ? 'off' : 'on'}
+                    list={props.name}
                 />
                 <Label.Text>
                     {props.label}
                 </Label.Text>
+                {
+                    hasSuggestions && (
+                        <datalist id={props.name}>
+                            {
+                                props.suggestions.map((suggestion) => (
+                                    <option value={suggestion}>
+                                        {suggestion}
+                                    </option>
+                                ))
+                            }
+                        </datalist>
+                    )
+                }
             </Label>
         </WrapperFormField>
     );
@@ -101,12 +117,15 @@ FormField.prototype = {
     label: Proptypes.string.isRequired, // É obrigatório
     type: Proptypes.string, // Não é obrigatório
     as: Proptypes.string,
+    suggestions: Proptypes.arrayOf(Proptypes.string),
     // etc 
 };
 
 FormField.defaultProps = {
     type: 'text',
-    as: 'input'
+    as: 'input',
+    // suggestions: ['Front End', 'Back End'],
+    suggestions: [],
 };
 
 export default FormField;
